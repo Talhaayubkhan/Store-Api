@@ -6,7 +6,9 @@ const getAllProductStatic = async (req, res) =>{
      res.status(200).json({products,  nbHits: products.length});
 }
 const getAllProducts = async (req, res) =>{
-     res.status(200).json({msg: "product testing"})
+     const products = await Product.find(req.query);
+     // console.log(req.query);
+     res.status(200).json({products,  nbHits: products.length})
 }
 
 
