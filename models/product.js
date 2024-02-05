@@ -27,7 +27,8 @@ const productSchema = new mongoose.Schema({
               message: "{VALUE} is not Supported"
           }
      }
-}, {timestamp: true});
+
+}, {timestamps: true});
 
 
 module.exports = mongoose.model('Product', productSchema);
