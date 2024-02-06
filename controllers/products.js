@@ -1,10 +1,13 @@
-
 const Product = require('../models/product');
 
+
 const getAllProductStatic = async (req, res) => {
+
      const products = await Product.find({}).select("name price");
      res.status(200).json({products,  nbHits: products.length});
 }
+
+
 const getAllProducts = async (req, res) => {
 
      const {featured, company, name, sort, fields, numericFilters} = req.query;
@@ -21,31 +24,31 @@ const getAllProducts = async (req, res) => {
           queryObj.name = {$regex: name, $options: 'i'};
      }
 
-     if(numericFilters){
-          const operatorMap = {
-               '>': '$gt',
-               '>=': '$gte',
-               '=': '$eq',
-               '<': '$lt',
-               '<=': '$lte',
-          }
+     if (numericFilters) {
 
-          const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-          let filter = numericFilters.replace(regEx, 
-               (match) => `-${operatorMap[match]}-`)
-          
-          const options = ['price', 'rating'];
-          filter = filter.split(',').forEach((item)=>{
-               const [field, operator, value] = item.split('-');
-
-               if(options.includes(field)){
-                    queryObj[field] = { [operator]: Number(value) }
+               const operatorMap = {
+                    '>': '$gt',
+                    '>=': '$gte',
+                    '=': '$eq',
+                    '<': '$lt',
+                    '<=': '$lte',
                }
-          })
+     
+               const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+               let filter = numericFilters.replace(regEx, 
+                    (match) =>  `-${operatorMap[match]}-`);
+     
+               const options = ['price', 'rating'];
+               filter = filter.split(',').forEach((item) => {
+                    const [field, operator, value] = item.split('-');
+                    if(options.includes(field)){
+                         queryObj[field] = {[operator]: Number(value)};
+                    }
+
+               })
      }
-
+     
      console.log(queryObj);
-
      let result = Product.find(queryObj);
      // because we chain sort with products, that is why we need to remove await and const ! 
      if(sort){
@@ -76,5 +79,5 @@ const getAllProducts = async (req, res) => {
 
 module.exports = {
      getAllProductStatic,
-     getAllProducts,
+     getAllProducts
 }
