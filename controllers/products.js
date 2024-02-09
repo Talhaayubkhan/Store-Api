@@ -35,19 +35,17 @@ const getAllProducts = async (req, res) => {
                }
      
                const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-               let filter = numericFilters.replace(regEx, 
-                    (match) =>  `-${operatorMap[match]}-`);
-     
-               const options = ['price', 'rating'];
-               filter = filter.split(',').forEach((item) => {
-                    const [field, operator, value] = item.split('-');
-                    if(options.includes(field)){
-                         queryObj[field] = {[operator]: Number(value)};
-                    }
 
+               let filter = numericFilters.replace(regEx, (match) => ` - ${operatorMap[match]}`);
+               
+               const options = ['price', 'rating'];
+               filter = filter.split(',').forEach((item) =>{
+                    const[field, operator, value] = item.split('-');
+                    if(options.includes(field)){
+                    queryObj[field] = { [operator]: Number(value)};
+                    }
                })
-     }
-     
+               }
      console.log(queryObj);
      let result = Product.find(queryObj);
      // because we chain sort with products, that is why we need to remove await and const ! 
